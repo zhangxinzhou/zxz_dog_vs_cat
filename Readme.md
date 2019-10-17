@@ -49,10 +49,10 @@ $$
 
 以下是部分图片展示
 ![cat.1](./img/cat.1.jpg)图1
-![cat.0](img\cat.0.jpg)图2
-![cat.6](img\cat.6.jpg)图3
-![cat.44](img\cat.44.jpg)图4
-![dog.1773](img\dog.1773.jpg)图5
+![cat.0](./img/cat.0.jpg)图2
+![cat.6](./img/cat.6.jpg)图3
+![cat.44](./img/cat.44.jpg)图4
+![dog.1773](./img/dog.1773.jpg)图5
 
 这些图片大部分都都像图1那样，标注正确、大小合适、清晰、没有包含其他元素。但也有一部分异常的数据，图片模糊（如图2），包含了其他的元素（图3），尺寸太小（图4），标注或者说分类错误（如图5，爱因斯坦被分类为dog，显然是错误的）。
 
@@ -61,12 +61,12 @@ $$
 至于尺寸大小不一，可以对这些图片做归一化处理，简单的说就是把图片的尺寸都调整为224*224的尺寸，中心化处理和灰度化处理。
 
 ### 探索性可视化
-![img_statics](img\img_statics.png)
-![im_fsize](img\im_fsize.png)
+![img_statics](./img/img_statics.png)
+![im_fsize](./img/im_fsize.png)
 
-![cat.835](img\cat.835.jpg)cat.835.jpg
+![cat.835](./img/cat.835.jpg)cat.835.jpg
 
-![dog.2317](img\dog.2317.jpg)dog.2317.jpg
+![dog.2317](./img/dog.2317.jpg)dog.2317.jpg
 
 对数据进行统计分析，发现图片的宽度集中在200px到500px左右，高度集中在200px到500px左右（猜测可能是因为有些图片是手机拍摄的），和大小分布在20KB左右（大小只的是文件大小）。
 
@@ -84,24 +84,24 @@ $$
 
 技术介绍：
 
-![cnn-structure (1)](img\cnn-structure (1).png)
+![cnn-structure (1)](./img/cnn-structure (1).png)
 上面是一个简单的 CNN 结构图, 第一层输入图片, 进行卷积(Convolution)操作, 得到第二层深度为 3 的特征图(Feature Map). 对第二层的特征图进行池化(Pooling)操作, 得到第三层深度为 3 的特征图. 重复上述操作得到第五层深度为 5 的特征图, 最后将这 5 个特征图, 也就是 5 个矩阵, 按行展开连接成向量, 传入全连接(Fully Connected)层, 全连接层就是一个 BP 神经网络. 图中的每个特征图都可以看成是排列成矩阵形式的神经元, 与 BP神经网络中的神经元大同小异. 下面是卷积和池化的计算过程.
 
 卷积：
 
-![cnn-filter-1](img\cnn-filter-1.png)
-![cnn-conv](img\cnn-conv.gif)
+![cnn-filter-1](./img/cnn-filter-1.png)
+![cnn-conv](./img/cnn-conv.gif)
 
 简单的说卷积可以理解为定义N个过滤器，来过滤图片中的特征。低级特征比如说可以是横线，竖线，斜线，中级特征是在低级特征上经过进一步卷积处理的特征，比如圆、正方形，更高级的特征则是在中级特征上经过进一步卷积处理的特征，比如说眼睛、耳朵等。这就是卷积的意义，可以提前与图片位置无关的特征信息。
 
 池化：
 
-![cnn-pooling](img\cnn-pooling.jpg)
+![cnn-pooling](./img/cnn-pooling.jpg)
 池化的意义比较简单，可以理解为将特征压缩，或者说将特征浓缩，这样减少计算量，大大加速训练过程。
 
 全连接：
 
-![timg](img\timg.jpg)
+![timg](./img/timg.jpg)
 
 全连接就是一个深度神经网络，将提取的特征训练最终分类。
 
@@ -259,7 +259,7 @@ Epoch: 19/20  Train Total: 19971 Train Loss: 0.1693 Train Acc: 0.9261 Valid Tota
 Epoch: 20/20  Train Total: 19971 Train Loss: 0.1760 Train Acc: 0.9235 Valid Total: 4986 Valid Loss: 0.0397 Valid Acc: 0.9846
 ```
 
-![vgg16_first](img\vgg16_first.png)
+![vgg16_first](./img/vgg16_first.png)
 
 对比寻找最优的参数组合：
 
@@ -292,9 +292,9 @@ Epoch: 20/20  Train Total: 19971 Train Loss: 0.1760 Train Acc: 0.9235 Valid Tota
 
 模型在验证集上的logloss为0.0351，验证集准确率为0.9874，如下图所示
 
-![vgg19_best](img\vgg19_best.png)
+![vgg19_best](./img/vgg19_best.png)
 
-![my_p](img\my_p.png)
+![my_p](./img/my_p.png)
 
 kaggle提交情况，score为0.72946，未达到要求。
 
@@ -308,9 +308,9 @@ kaggle提交情况，score为0.72946，未达到要求。
 
 - 重新清洗数据（图片），之前的操作流程是先识别出猫和狗的图片，然后再把猫和狗的图片分类到不同的文件夹中。仔细思考了一下，这样做肯定能分离出既不是猫也不是狗的图片，但是这里可能会导致两个问题无法被识别：问题1猫和狗的元素混合在一张图片里，问题2比如说猫的图片标注却是狗。因此这次更换了思路，首先按照标注把猫和狗分别放在不同的文件夹里面，然后使用resnet50去猫的文件夹里面剔除掉不是猫的，去狗的文件夹里面剔除不是狗的（细节可以查看clean_image.ipynb）。果然发现了一些有意思的图片，其中cat.7920.jpg虽说是猫狗混合，但其实很难分辨出猫的特征，把他标注成猫对模型的训练有很大的影响，cat.5355.jpg则是典型的猫狗混合，这样图片必须被剔除。
 
-  ![cat.7920](img\cat.7920.jpg)cat.7920.jpg（猫狗混合）
+  ![cat.7920](./img/cat.7920.jpg)cat.7920.jpg（猫狗混合）
 
-  ![cat.5355](img\cat.5355.jpg)cat.5355.jpg（猫狗混合）
+  ![cat.5355](./img/cat.5355.jpg)cat.5355.jpg（猫狗混合）
 
 - 使用更先进的深度学习网络InceptionV3，更复杂的学习模型可以学习到更多的特性，能更精确的预测。
 
@@ -363,7 +363,7 @@ my_model.add(layers.Dense(1, activation='sigmoid'))
 
 在验证集上logloss达到0.0263，准曲率为0.9931。
 
-![result_pic](img\result_pic.png)
+![result_pic](./img/result_pic.png)
 
 
 
@@ -371,13 +371,13 @@ my_model.add(layers.Dense(1, activation='sigmoid'))
 
 score为0.5505低于0.06127，达到了要求。
 
-![my_score](img\my_score.png)
+![my_score](./img/my_score.png)
 
 - kaggle上的排名
 
 排名在94的位置上，94/1314=7%，在前top10%，达到要求。
 
-![my_seq](img\my_seq.png)
+![my_seq](./img/my_seq.png)
 
 
 ## V. 项目结论
